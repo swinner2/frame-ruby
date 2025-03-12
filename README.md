@@ -1,28 +1,105 @@
-# Frame
+# Frame Payments Ruby Library
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/frame`. To experiment with that code, run `bin/console` for an interactive prompt.
+A Ruby library for the Frame Payments API.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem 'frame'
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+And then execute:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+bundle install
+```
+
+Or install it yourself as:
+
+```bash
+gem install frame
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+The library needs to be configured with your Frame API key:
+
+```ruby
+require 'frame'
+Frame.api_key = 'your_api_key'
+```
+
+### Customers
+
+Create a customer:
+
+```ruby
+customer = Frame::Customer.create(
+  name: 'John Doe',
+  email: 'john@example.com',
+  phone: '+1234567890',
+  metadata: {
+    user_id: '12345'
+  }
+)
+```
+
+Retrieve a customer:
+
+```ruby
+customer = Frame::Customer.retrieve('cus_123456789')
+```
+
+Update a customer:
+
+```ruby
+customer = Frame::Customer.retrieve('cus_123456789')
+customer.name = 'Jane Doe'
+customer.save
+
+# Alternative approach
+customer = Frame::Customer.retrieve('cus_123456789')
+customer.save(name: 'Jane Doe')
+```
+
+List all customers:
+
+```ruby
+customers = Frame::Customer.list
+customers.each do |customer|
+  puts "Customer: #{customer.name}, Email: #{customer.email}"
+end
+
+# With pagination
+customers = Frame::Customer.list(page: 1, per_page: 20)
+```
+
+Search customers:
+
+```ruby
+customers = Frame::Customer.search(name: 'John')
+```
+
+Delete a customer:
+
+```ruby
+Frame::Customer.delete('cus_123456789')
+# or
+customer = Frame::Customer.retrieve('cus_123456789')
+customer.delete
+```
+
+Block/unblock a customer:
+
+```ruby
+customer = Frame::Customer.retrieve('cus_123456789')
+customer.block
+
+# Unblock
+customer.unblock
+```
 
 ## Development
 

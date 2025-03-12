@@ -1,0 +1,16 @@
+{
+  "id": "55435398-ec47-4bb4-ac9e-64031481cf48",
+  "created": 1736995552,
+  "payment_methods": [],
+  "billing_address": null,
+  "shipping_address": null,
+  "updated": 1736995850,
+  "livemode": false,
+  "metadata": {},
+  "name": "John",
+  "phone": null,
+  "email": "john@example.com",
+  "description": null,
+  "object": "customer",
+  "status": "blocked"
+}
