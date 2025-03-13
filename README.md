@@ -39,7 +39,7 @@ Create a customer:
 customer = Frame::Customer.create(
   name: 'John Doe',
   email: 'john@example.com',
-  phone: '+1234567890',
+  phone: '+12345678900',
   metadata: {
     user_id: '12345'
   }

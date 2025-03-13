@@ -5,7 +5,8 @@ module Frame
     include Enumerable
     include Frame::APIOperations::Request
 
-    attr_accessor :filters, :resource_url, :data
+    attr_accessor :filters
+    attr_reader :resource_url, :data
 
     def initialize(data = {}, opts = {})
       super(nil, opts)
@@ -14,6 +15,13 @@ module Frame
       @resource_url = opts[:resource_url]
       @has_more = data[:meta] && data[:meta][:has_more]
       @page = data[:meta] && data[:meta][:page] || 1
+      
+      # Extract per_page from URL if available
+      if data[:meta] && data[:meta][:url] && data[:meta][:url].include?('per_page=')
+        @per_page = data[:meta][:url].match(/per_page=(\d+)/)[1].to_i rescue 10
+      else
+        @per_page = 10
+      end
     end
 
     def self.construct_from(values, opts = {})
@@ -73,15 +81,28 @@ module Frame
       return self.class.empty_list(opts) unless has_more?
 
       params = filters.merge(params || {})
-      params[:page] = @page + 1 if @page
+      next_page_num = @page + 1 if @page
+      params[:page] = next_page_num
+      params[:per_page] = @per_page if @per_page
       
       # Get the resource URL - try all possible fallbacks
       url = self.resource_url || 
             (self.class.respond_to?(:resource_url) ? self.class.resource_url : nil) ||
             "/v1/customers" # Default if we can't determine it
-            
+
       response = request(:get, url, params, opts)
-      Util.convert_to_frame_object(response, opts)
+      result = Util.convert_to_frame_object(response, opts)
+      
+      # Update this object's state with the next page's data
+      if result && !result.empty?
+        @page = next_page_num
+        @data = result.data
+        @has_more = result.has_more?
+        
+        self
+      else
+        result
+      end
     end
 
     def has_more?
@@ -97,13 +118,33 @@ module Frame
         data: @data.map { |i| i.is_a?(FrameObject) ? i.to_hash : i },
         meta: {
           has_more: has_more?,
-          page: @page
+          page: @page,
+          per_page: @per_page
         }
       }
+    end    
+
+    def inspect
+      meta_info = "#<#{self.class.name}:0x#{object_id.to_s(16)} @page=#{@page} @per_page=#{@per_page} @has_more=#{@has_more} items=#{@data.size}>"
+      
+      # If data is empty, just return meta info
+      return meta_info if @data.empty?
+      
+      # Format each item in the data array
+      data_strings = @data.map do |item|
+        if item.is_a?(FrameObject) && item.respond_to?(:id) && item.id
+          obj_name = item.class.name.split('::').last
+          "  #<#{obj_name}:#{item.id} #{item.inspect}>"
+        else
+          "  #{item.inspect}"
+        end
+      end
+      
+      "#{meta_info}\ndata=[\n#{data_strings.join(",\n")}\n]"
     end
-
+    
     private
-
+    
     def object_class_for_data
       return nil if @data.empty?
       
