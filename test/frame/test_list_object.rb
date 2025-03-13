@@ -54,7 +54,7 @@ class TestListObject < Minitest::Test
     # Stub the next page request
     stub_request(:get, "#{Frame.api_base}/v1/customers")
       .with(
-        query: { page: 2 },
+        query: { page: 2, per_page: 10 },
         headers: { "Authorization" => "Bearer #{TEST_API_KEY}" }
       )
       .to_return(
@@ -70,7 +70,7 @@ class TestListObject < Minitest::Test
     
     # Verify the request was made with correct pagination parameters
     assert_requested :get, "#{Frame.api_base}/v1/customers", 
-                     query: { page: 2 },
+                     query: { page: 2, per_page: 10 },
                      times: 1
   end
 
@@ -99,7 +99,7 @@ class TestListObject < Minitest::Test
     # Stub the next page request with the filters
     stub_request(:get, "#{Frame.api_base}/v1/customers")
       .with(
-        query: { page: 2, email: "john@example.com" },
+        query: { page: 2, per_page: 10, email: "john@example.com" },
         headers: { "Authorization" => "Bearer #{TEST_API_KEY}" }
       )
       .to_return(
@@ -114,7 +114,7 @@ class TestListObject < Minitest::Test
     
     # Verify the request was made with both pagination and filter parameters
     assert_requested :get, "#{Frame.api_base}/v1/customers", 
-                     query: { page: 2, email: "john@example.com" },
+                     query: { page: 2, per_page: 10, email: "john@example.com" },
                      times: 1
   end
 end

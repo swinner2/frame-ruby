@@ -8,8 +8,13 @@ class TestFrame < Minitest::Test
   end
 
   def test_api_key_configuration
-    Frame.api_key = "test_api_key"
-    assert_equal "test_api_key", Frame.api_key
+    original_api_key = Frame.api_key
+    begin
+      Frame.api_key = "test_api_key"
+      assert_equal "test_api_key", Frame.api_key
+    ensure
+      Frame.api_key = original_api_key
+    end
   end
 
   def test_api_base_configuration

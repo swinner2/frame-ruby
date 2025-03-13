@@ -56,3 +56,18 @@ end
 # Configure Frame for testing
 Frame.api_key = TEST_API_KEY
 Frame.api_base = "https://api.framepayments.com"
+
+class Minitest::Test
+  def setup
+    Thread.current[:frame_client] = nil
+    
+    Frame.api_key = TEST_API_KEY
+    Frame.api_base = "https://api.framepayments.com"
+    
+    WebMock.reset!
+  end
+  
+  def teardown
+    Thread.current[:frame_client] = nil
+  end
+end
