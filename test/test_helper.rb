@@ -29,25 +29,25 @@ module FrameTest
   module APIOperations
     def stub_api_request(method, path, response_fixture, status: 200, request_params: nil)
       url = "#{Frame.api_base}#{path}"
-      
+
       stub_params = {
         headers: {
           "Authorization" => "Bearer #{TEST_API_KEY}",
           "Content-Type" => "application/json"
         }
       }
-      
+
       # Add query parameters for GET requests if provided
       if method == :get && request_params
         stub_params[:query] = request_params
       end
-      
+
       stub_request(method, url)
         .with(stub_params)
         .to_return(
           body: fixture(response_fixture),
           status: status,
-          headers: { "Content-Type" => "application/json" }
+          headers: {"Content-Type" => "application/json"}
         )
     end
   end
@@ -60,13 +60,13 @@ Frame.api_base = "https://api.framepayments.com"
 class Minitest::Test
   def setup
     Thread.current[:frame_client] = nil
-    
+
     Frame.api_key = TEST_API_KEY
     Frame.api_base = "https://api.framepayments.com"
-    
+
     WebMock.reset!
   end
-  
+
   def teardown
     Thread.current[:frame_client] = nil
   end

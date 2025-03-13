@@ -5,14 +5,14 @@ module Frame
     include Frame::APIOperations::Request
 
     def self.class_name
-      name.split('::')[-1]
+      name.split("::")[-1]
     end
 
     def self.resource_url
       if self == APIResource
         raise NotImplementedError,
-              "APIResource is an abstract class. You should perform actions " \
-              "on its subclasses (Customer, etc.)"
+          "APIResource is an abstract class. You should perform actions " \
+          "on its subclasses (Customer, etc.)"
       end
 
       "/v1/#{object_name.downcase}s"
@@ -26,11 +26,11 @@ module Frame
     end
 
     def resource_url
-      unless (id = self['id'])
+      unless (id = self["id"])
         raise InvalidRequestError.new(
           "Could not determine which URL to request: #{self.class} instance " \
           "has invalid ID: #{id.inspect}",
-          'id'
+          "id"
         )
       end
       "#{self.class.resource_url}/#{CGI.escape(id)}"

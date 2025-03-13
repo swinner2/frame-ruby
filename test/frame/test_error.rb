@@ -8,7 +8,7 @@ class TestError < Minitest::Test
 
   def test_authentication_error
     customer_id = "55435398-ec47-4bb4-ac9e-64031481cf48"
-    
+
     # Stub an authentication error
     stub_request(:get, "#{Frame.api_base}/v1/customers/#{customer_id}")
       .with(headers: {"Authorization" => "Bearer #{TEST_API_KEY}"})
@@ -18,7 +18,7 @@ class TestError < Minitest::Test
           error: "Invalid API Key provided.",
           status: 401
         }),
-        headers: { "Content-Type" => "application/json" }
+        headers: {"Content-Type" => "application/json"}
       )
 
     error = assert_raises Frame::AuthenticationError do
@@ -39,7 +39,7 @@ class TestError < Minitest::Test
           error: "Missing required parameter: email",
           status: 400
         }),
-        headers: { "Content-Type" => "application/json" }
+        headers: {"Content-Type" => "application/json"}
       )
 
     error = assert_raises Frame::InvalidRequestError do
@@ -52,7 +52,7 @@ class TestError < Minitest::Test
 
   def test_resource_not_found_error
     customer_id = "nonexistent_id"
-    
+
     # Stub a not found error
     stub_request(:get, "#{Frame.api_base}/v1/customers/#{customer_id}")
       .with(headers: {"Authorization" => "Bearer #{TEST_API_KEY}"})
@@ -62,7 +62,7 @@ class TestError < Minitest::Test
           error: "Customer not found",
           status: 404
         }),
-        headers: { "Content-Type" => "application/json" }
+        headers: {"Content-Type" => "application/json"}
       )
 
     error = assert_raises Frame::InvalidRequestError do
@@ -83,7 +83,7 @@ class TestError < Minitest::Test
           error: "Rate limit exceeded",
           status: 429
         }),
-        headers: { "Content-Type" => "application/json" }
+        headers: {"Content-Type" => "application/json"}
       )
 
     error = assert_raises Frame::RateLimitError do
@@ -104,7 +104,7 @@ class TestError < Minitest::Test
           error: "Internal server error",
           status: 500
         }),
-        headers: { "Content-Type" => "application/json" }
+        headers: {"Content-Type" => "application/json"}
       )
 
     error = assert_raises Frame::APIError do

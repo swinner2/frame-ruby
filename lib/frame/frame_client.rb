@@ -31,16 +31,14 @@ module Frame
     end
 
     def request(method, path, params = {}, opts = {})
-      begin
-        response = execute_request(method, path, params, opts)
-        process_response(response)
-      rescue Faraday::ConnectionFailed => e
-        raise APIConnectionError.new("Connection failed: #{e.message}")
-      rescue Faraday::TimeoutError => e
-        raise APIConnectionError.new("Request timed out: #{e.message}")
-      rescue Faraday::ClientError => e
-        raise APIConnectionError.new("Client error: #{e.message}")
-      end
+      response = execute_request(method, path, params, opts)
+      process_response(response)
+    rescue Faraday::ConnectionFailed => e
+      raise APIConnectionError.new("Connection failed: #{e.message}")
+    rescue Faraday::TimeoutError => e
+      raise APIConnectionError.new("Request timed out: #{e.message}")
+    rescue Faraday::ClientError => e
+      raise APIConnectionError.new("Client error: #{e.message}")
     end
 
     private
@@ -58,9 +56,9 @@ module Frame
 
     def execute_request(method, path, params, opts)
       headers = {
-        'Authorization' => "Bearer #{@config[:api_key]}",
-        'Content-Type' => 'application/json',
-        'User-Agent' => "FrameRuby/#{Frame::VERSION}"
+        "Authorization" => "Bearer #{@config[:api_key]}",
+        "Content-Type" => "application/json",
+        "User-Agent" => "FrameRuby/#{Frame::VERSION}"
       }
 
       case method.to_s.downcase.to_sym

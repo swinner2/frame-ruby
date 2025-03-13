@@ -7,7 +7,7 @@ module Frame
     include Frame::APIOperations::Delete
     include Frame::APIOperations::Save
 
-    OBJECT_NAME = "customer".freeze
+    OBJECT_NAME = "customer"
 
     def self.object_name
       OBJECT_NAME
@@ -62,7 +62,7 @@ module Frame
     def block(params = {}, opts = {})
       request_object(
         :post,
-        "/v1/customers/#{CGI.escape(self['id'])}/block",
+        "/v1/customers/#{CGI.escape(self["id"])}/block",
         params,
         opts
       )
@@ -80,7 +80,7 @@ module Frame
     def unblock(params = {}, opts = {})
       request_object(
         :post,
-        "/v1/customers/#{CGI.escape(self['id'])}/unblock",
+        "/v1/customers/#{CGI.escape(self["id"])}/unblock",
         params,
         opts
       )
@@ -104,7 +104,7 @@ module Frame
 
       updated = request_object(
         :patch,
-        "/v1/customers/#{CGI.escape(self['id'])}",
+        "/v1/customers/#{CGI.escape(self["id"])}",
         values,
         opts
       )
@@ -116,7 +116,7 @@ module Frame
     def delete(params = {}, opts = {})
       request_object(
         :delete,
-        "/v1/customers/#{CGI.escape(self['id'])}",
+        "/v1/customers/#{CGI.escape(self["id"])}",
         params,
         opts
       )
